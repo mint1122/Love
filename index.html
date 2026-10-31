@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Level 22 Unlocked</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Itim&family=Mitr:wght@400;500;600&family=Press+Start+2P&display=swap">
+<style>
+html,body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+/* Layout: one centered arcade cabinet column; one screen (level) visible at a time, HUD on top. Single deliberate night-arcade look. */
+:root{
+  --bg:#141230;
+  --bg-deep:#0c0a20;
+  --panel:#262158;
+  --line:#0a081b;
+  --ink:#f6f2ff;
+  --muted:#aba4dc;
+  --green:#5be38a;   /* สีวันพุธ */
+  --green-ink:#0d2a18;
+  --gold:#ffcf5a;
+  --pink:#ff6f9f;
+  --paper:#fff6dc;
+  --paper-ink:#3b2c1c;
+  --f-pixel:"Press Start 2P", ui-monospace, "Courier New", monospace;
+  --f-th:"Mitr", "Noto Sans Thai", "Leelawadee UI", sans-serif;
+  --f-hand:"Itim", "Mitr", "Noto Sans Thai", sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #ffffff99 50%, transparent 51%),
+    radial-gradient(1px 1px at 90px 120px, #ffffff66 50%, transparent 51%),
+    radial-gradient(2px 2px at 150px 60px, #ffcf5a88 50%, transparent 51%),
+    radial-gradient(1px 1px at 200px 170px, #ffffff80 50%, transparent 51%);
+  background-size:230px 210px;
+  color:var(--ink);
+  font-family:var(--f-th);
+  font-size:16px;
+  line-height:1.6;
+}
+.wrap{
+  max-width:480px; margin:0 auto;
+  padding-block:16px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex; flex-direction:column; gap:16px;
+}
+.hud{display:flex; align-items:center; justify-content:space-between; gap:12px;
+  font-family:var(--f-pixel); font-size:10px; color:var(--muted)}
+.hud .lv{color:var(--gold)}
+.pips{display:flex; gap:6px}
+.pip{width:12px; height:12px; background:var(--panel); box-shadow:0 0 0 2px var(--line)}
+.pip.done{background:var(--green)}
+.pip.now{background:var(--gold)}
+.sound{font-family:var(--f-pixel); font-size:9px; background:none; color:var(--muted); border:2px solid var(--panel); padding:6px 8px; cursor:pointer}
+.sound:focus-visible, .btn:focus-visible, .choice:focus-visible, .card:focus-visible, .candle:focus-visible, .gift:focus-visible, input:focus-visible{outline:3px solid var(--gold); outline-offset:3px}
+
+.panel{background:var(--panel); border:4px solid var(--line); box-shadow:6px 6px 0 var(--line); padding:20px; display:flex; flex-direction:column; gap:14px}
+.screen{display:flex; flex-direction:column; gap:16px}
+.eyebrow{font-family:var(--f-pixel); font-size:10px; color:var(--green); letter-spacing:.06em}
+h1,h2{margin:0; text-wrap:balance; font-weight:600; line-height:1.3}
+h2{font-size:22px}
+p{margin:0}
+.muted{color:var(--muted); font-size:14px}
+
+.btn{font-family:var(--f-th); font-weight:500; font-size:17px; background:var(--green); color:var(--green-ink);
+  border:none; padding:12px 20px; cursor:pointer; box-shadow:inset -4px -4px 0 #00000033, 0 5px 0 var(--line); transition:transform .06s}
+.btn:active{transform:translateY(4px); box-shadow:inset -4px -4px 0 #00000033, 0 1px 0 var(--line)}
+.btn.gold{background:var(--gold); color:#3a2700}
+.btn.ghost{background:transparent; color:var(--ink); box-shadow:inset 0 0 0 3px var(--muted)}
+.btn[disabled]{opacity:.45; cursor:not-allowed}
+.row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+
+/* ---------- title ---------- */
+.logo{font-family:var(--f-pixel); font-size:clamp(30px, 10vw, 46px); line-height:1.15; color:var(--gold);
+  text-shadow:4px 4px 0 var(--pink), 8px 8px 0 var(--line)}
+.logo small{display:block; font-size:.36em; color:var(--green); text-shadow:3px 3px 0 var(--line); margin-top:12px}
+.count{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.count div{background:var(--bg-deep); padding:10px 4px; text-align:center}
+.count b{display:block; font-family:var(--f-pixel); font-size:18px; color:var(--ink); font-variant-numeric:tabular-nums}
+.count span{font-size:12px; color:var(--muted)}
+.blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.facts{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font-size:13px; background:var(--bg-deep); padding:4px 10px; color:var(--muted)}
+.chip b{color:var(--green); font-weight:500}
+
+/* ---------- lock ---------- */
+.pw{font-family:var(--f-pixel); font-size:22px; letter-spacing:.3em; text-align:center; width:100%;
+  background:var(--bg-deep); color:var(--gold); border:4px solid var(--line); padding:14px}
+.err{color:var(--pink); min-height:1.6em; font-size:14px}
+.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ---------- catch ---------- */
+.gamebox{position:relative; border:4px solid var(--line); box-shadow:6px 6px 0 var(--line); background:#100d27}
+#catch-cv{display:block; width:100%; aspect-ratio:240/300; image-rendering:pixelated; touch-action:none}
+.overlay{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  background:#0c0a20cc; text-align:center; padding:20px}
+.score{font-family:var(--f-pixel); font-size:12px; display:flex; justify-content:space-between}
+.score b{color:var(--gold)}
+.pad{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.pad .btn{font-family:var(--f-pixel); font-size:16px; padding:16px; touch-action:none; user-select:none}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+.legend span{display:flex; align-items:center; gap:6px}
+.legend img{width:16px; height:16px; image-rendering:pixelated}
+
+/* ---------- quiz ---------- */
+.q{font-size:19px; font-weight:500}
+.choices{display:flex; flex-direction:column; gap:10px}
+.choice{font-family:var(--f-th); font-size:16px; text-align:left; background:var(--bg-deep); color:var(--ink);
+  border:3px solid var(--line); padding:12px 14px; cursor:pointer}
+.choice:hover{border-color:var(--green)}
+.choice.right{background:var(--green); color:var(--green-ink)}
+.choice.wrong{background:var(--pink); color:#3a0016}
+
+/* ---------- memory ---------- */
+.grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.card{aspect-ratio:1; border:none; padding:0; cursor:pointer; background:var(--bg-deep);
+  box-shadow:inset 0 0 0 3px var(--line), 3px 3px 0 var(--line); display:grid; place-items:center;
+  font-family:var(--f-pixel); font-size:18px; color:var(--muted)}
+.card img{width:60%; image-rendering:pixelated; display:none}
+.card.open, .card.got{background:var(--paper)}
+.card.open img, .card.got img{display:block}
+.card.open .qm, .card.got .qm{display:none}
+.card.got{opacity:.55}
+
+/* ---------- cake ---------- */
+.cake-scene{display:flex; flex-direction:column; align-items:center; padding-top:10px}
+.candles{display:flex; gap:14px; align-items:flex-end; height:70px}
+.candle{width:16px; height:44px; border:none; padding:0; cursor:pointer; position:relative;
+  background:repeating-linear-gradient(180deg, var(--paper) 0 6px, var(--pink) 6px 12px); box-shadow:2px 0 0 var(--line)}
+.flame{position:absolute; left:2px; bottom:46px; width:12px; height:18px; background:var(--gold);
+  box-shadow:inset 0 -6px 0 #ff8a3d, 0 0 14px #ffcf5a; animation:flick .5s steps(2) infinite}
+.candle.out .flame{display:none}
+.candle.out::after{content:""; position:absolute; left:6px; bottom:48px; width:4px; height:10px; background:#ffffff55}
+@keyframes flick{50%{transform:translateY(-2px) scaleX(.85)}}
+.cake{width:min(280px,90%)}
+.cake div{height:22px}
+.c1{background:var(--paper); width:86%; margin:0 auto; box-shadow:inset 0 -6px 0 #f2dfb5}
+.c2{background:var(--pink); box-shadow:inset 0 6px 0 #ff9cbd}
+.c3{background:var(--paper); box-shadow:inset 0 -6px 0 #f2dfb5}
+.c4{background:var(--green); height:12px !important; box-shadow:inset 0 -4px 0 #3fb86b}
+.plate{height:8px !important; background:var(--muted); width:110%; margin-left:-5%}
+.hb{font-family:var(--f-pixel); font-size:16px; color:var(--gold); text-align:center; line-height:1.6}
+
+/* ---------- reward ---------- */
+.gift{border:none; background:none; cursor:pointer; padding:10px; display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--ink); font-family:var(--f-th); font-size:15px}
+.gift .box{width:140px; height:110px; position:relative; background:var(--pink); box-shadow:inset -8px -8px 0 #00000030, 6px 6px 0 var(--line)}
+.gift .box::before{content:""; position:absolute; left:58px; top:0; width:24px; height:100%; background:var(--gold)}
+.gift .lid{width:160px; height:30px; background:var(--pink); margin-bottom:-10px; position:relative; z-index:1;
+  box-shadow:inset -8px -8px 0 #00000030, 6px 6px 0 var(--line); animation:hop 1.2s ease-in-out infinite}
+.gift .lid::before{content:""; position:absolute; left:68px; top:0; width:24px; height:100%; background:var(--gold)}
+@keyframes hop{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(-10px) rotate(-3deg)}}
+.letter{background:var(--paper); color:var(--paper-ink); padding:22px 20px; font-family:var(--f-hand); font-size:19px; line-height:1.7;
+  border:4px solid var(--line); box-shadow:6px 6px 0 var(--line); white-space:pre-wrap; min-height:180px}
+.letter .sign{display:block; text-align:right; margin-top:10px}
+.caret{display:inline-block; width:10px; height:1.1em; vertical-align:-3px; background:var(--paper-ink); animation:blink 1s steps(2) infinite}
+.reason{background:var(--bg-deep); padding:18px; min-height:110px; display:flex; flex-direction:column; gap:6px; justify-content:center}
+.reason .n{font-family:var(--f-pixel); font-size:10px; color:var(--gold)}
+.reason .t{font-size:18px}
+.pop{animation:pop .3s ease-out}
+@keyframes pop{from{transform:scale(.92); opacity:.3}}
+.coupons{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.coupon{background:var(--paper); color:var(--paper-ink); padding:12px; display:flex; flex-direction:column; gap:8px;
+  border:3px dashed var(--paper-ink); position:relative; min-width:0}
+.coupon h3{margin:0; font-size:16px; font-weight:600; line-height:1.35}
+.coupon p{font-size:13px}
+.coupon button{margin-top:auto; font-family:var(--f-th); font-size:14px; background:var(--paper-ink); color:var(--paper); border:none; padding:6px; cursor:pointer}
+.coupon.used{opacity:.6}
+.coupon.used::after{content:"ใช้แล้ว"; position:absolute; top:10px; right:8px; transform:rotate(12deg);
+  border:3px solid var(--pink); color:var(--pink); font-weight:600; padding:0 6px; font-size:14px}
+.days{font-family:var(--f-pixel); font-size:clamp(26px,9vw,38px); color:var(--green); font-variant-numeric:tabular-nums}
+#ambient{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; image-rendering:pixelated}
+.wrap{position:relative; z-index:1}
+.panel, .gamebox{position:relative}
+.deco{position:absolute; width:30px; image-rendering:pixelated; pointer-events:none; animation:bob 1.6s steps(2) infinite}
+.deco.r{top:-16px; right:-12px; transform:rotate(10deg)}
+.deco.l{top:-16px; left:-12px; transform:rotate(-10deg)}
+.deco.b{bottom:-14px; right:18px; width:22px; animation-delay:.4s}
+@keyframes bob{50%{translate:0 -4px}}
+.lives{display:flex; gap:3px; align-items:center}
+.lives img{width:14px; image-rendering:pixelated}
+.hudl{display:flex; gap:10px; align-items:center}
+.logo{position:relative}
+.spark{position:absolute; width:16px; image-rendering:pixelated; animation:twinkle 1.4s steps(2) infinite}
+@keyframes twinkle{50%{opacity:.15; transform:scale(.6)}}
+.mascot{display:flex; justify-content:center; align-items:flex-end; gap:10px; padding:8px 0 2px; background:
+  linear-gradient(var(--green) 0 0) bottom/100% 4px no-repeat}
+.mascot img{image-rendering:pixelated}
+.m-boy, .m-girl{width:48px; animation:hopc .8s steps(2) infinite}
+.m-girl{animation-delay:.4s}
+@keyframes hopc{50%{translate:0 -6px}}
+.m-mid{display:flex; flex-direction:column; align-items:center; gap:6px; padding-bottom:18px}
+.m-heart{width:32px; animation:pulse .7s steps(2) infinite}
+@keyframes pulse{50%{transform:scale(1.25)}}
+.bubble{font-family:var(--f-pixel); font-size:9px; background:var(--paper); color:var(--paper-ink); padding:6px 8px; position:relative; box-shadow:3px 3px 0 var(--line)}
+.bubble::after{content:""; position:absolute; left:50%; bottom:-6px; margin-left:-4px; border:4px solid transparent; border-top-color:var(--paper); border-bottom:0}
+.strip{height:16px; background-image:var(--strip); background-repeat:space no-repeat; background-size:16px 16px; opacity:.85}
+.card:not(.open):not(.got){background-image:var(--tile); background-size:24px 24px}
+#confetti{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:20}
+
+@media (max-width:380px){ .coupons{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){
+  .blink,.caret,.flame,.gift .lid,.shake,.pop,.deco,.spark,.m-boy,.m-girl,.m-heart{animation:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="ambient"></canvas>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="hud">
+    <div class="hudl"><span class="lv">LV.22</span><span class="lives" id="lives"></span></div>
+    <div class="pips" id="pips" aria-label="ความคืบหน้า"></div>
+    <button class="sound" id="sound" type="button">SOUND ON</button>
+  </div>
+
+  <!-- TITLE -->
+  <section class="screen" id="s-title">
+    <div class="panel">
+      <div class="logo">LEVEL 22<small>UNLOCKED</small>
+        <img class="spark" data-s="star" style="top:-6px; right:18%" alt="">
+        <img class="spark" data-s="star" style="top:40%; right:2%; animation-delay:.5s" alt="">
+        <img class="spark" data-s="heart" style="bottom:-4px; right:30%; animation-delay:.9s" alt="">
+      </div>
+      <div class="mascot" aria-hidden="true">
+        <img class="m-boy" data-s="boy" alt="">
+        <div class="m-mid"><span class="bubble">HBD!</span><img class="m-heart" data-s="heart" alt=""></div>
+        <img class="m-girl" data-s="girl" alt="">
+      </div>
+      <p id="t-sub">ด่านพิเศษที่ทำไว้ให้เธอคนเดียว เล่นให้ผ่านทุกด่าน แล้วของขวัญจะเปิดเอง</p>
+      <div>
+        <p class="muted" id="cd-label">นับถอยหลังถึงวันเกิด 8 ธ.ค. 2569</p>
+        <div class="count" id="count">
+          <div><b id="cd-d">--</b><span>วัน</span></div>
+          <div><b id="cd-h">--</b><span>ชั่วโมง</span></div>
+          <div><b id="cd-m">--</b><span>นาที</span></div>
+          <div><b id="cd-s">--</b><span>วินาที</span></div>
+        </div>
+      </div>
+      <div class="facts">
+        <span class="chip">เกิด <b>วันพุธ</b> 8 ธ.ค. 2547</span>
+        <span class="chip">ราศี <b>ธนู</b></span>
+        <span class="chip">ปีนี้อายุ <b>22</b></span>
+      </div>
+      <button class="btn gold" id="start" type="button"><span class="blink">▶</span> PRESS START</button>
+      <p class="muted" id="lock-note" hidden>ปุ่มจะกดได้ตอนเที่ยงคืนวันที่ 8 นะ</p>
+    </div>
+  </section>
+
+  <!-- LOCK -->
+  <section class="screen" id="s-lock" hidden>
+    <div class="panel" id="lock-panel">
+      <span class="eyebrow">PLAYER CHECK</span>
+      <h2>ใส่รหัสก่อนเข้าเกม</h2>
+      <p class="muted" id="pw-hint"></p>
+      <input class="pw" id="pw" type="text" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="รหัสผ่าน">
+      <p class="err" id="pw-err"></p>
+      <button class="btn" id="pw-go" type="button">ยืนยัน</button>
+    </div>
+  </section>
+
+  <!-- STAGE 1 CATCH -->
+  <section class="screen" id="s-catch" hidden>
+    <div>
+      <span class="eyebrow">STAGE 1</span>
+      <h2>เก็บหัวใจให้ครบ 22 ดวง</h2>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="score"><span>SCORE <b id="sc">0</b>/22</span><span id="sc-msg"></span></div>
+    <div class="gamebox">
+      <canvas id="catch-cv" width="240" height="300"></canvas>
+      <div class="overlay" id="catch-ov">
+        <p>ลากนิ้วบนจอ หรือกดปุ่มซ้ายขวา<br>เพื่อขยับตะกร้า</p>
+        <button class="btn" id="catch-go" type="button">เริ่มเลย</button>
+      </div>
+    </div>
+    <div class="pad">
+      <button class="btn ghost" id="left" type="button" aria-label="ซ้าย">◀</button>
+      <button class="btn ghost" id="right" type="button" aria-label="ขวา">▶</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 QUIZ -->
+  <section class="screen" id="s-quiz" hidden>
+    <div class="panel">
+      <span class="eyebrow" id="q-n">STAGE 2 · 1/3</span>
+      <p class="q" id="q-text"></p>
+      <div class="choices" id="q-choices"></div>
+      <p class="err" id="q-msg"></p>
+    </div>
+  </section>
+
+  <!-- STAGE 3 MEMORY -->
+  <section class="screen" id="s-memory" hidden>
+    <div>
+      <span class="eyebrow">STAGE 3</span>
+      <h2>จับคู่ภาพให้ครบ 6 คู่</h2>
+      <p class="muted">เปิดไปแล้ว <span id="mv">0</span> ครั้ง</p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- STAGE 4 CAKE -->
+  <section class="screen" id="s-cake" hidden>
+    <div class="panel">
+      <span class="eyebrow">STAGE 4 · BOSS</span>
+      <h2 id="cake-h">อธิษฐานก่อน แล้วแตะเทียนให้ดับทุกเล่ม</h2>
+      <div class="cake-scene">
+        <div class="candles" id="candles"></div>
+        <div class="cake"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div><div class="plate"></div></div>
+      </div>
+      <p class="hb" id="hb" hidden>HAPPY<br>BIRTHDAY!</p>
+      <button class="btn gold" id="to-gift" type="button" hidden>รับของขวัญ ▶</button>
+    </div>
+  </section>
+
+  <!-- REWARD -->
+  <section class="screen" id="s-reward" hidden>
+    <div class="panel" id="gift-wrap" style="align-items:center; text-align:center">
+      <span class="eyebrow">ALL CLEAR</span>
+      <h2>เก่งมาก ผ่านครบทุกด่านแล้ว</h2>
+      <button class="gift" id="gift" type="button"><div class="lid"></div><div class="box"></div><span>แตะเพื่อเปิดกล่อง</span></button>
+    </div>
+    <div id="opened" class="screen" hidden>
+      <div class="letter" id="letter" aria-live="polite"></div>
+      <button class="btn ghost" id="skip" type="button">แสดงทั้งหมด</button>
+
+      <div class="strip"></div>
+      <div class="panel">
+        <span class="eyebrow">BONUS</span>
+        <h2>เหตุผลที่รักเธอ</h2>
+        <div class="reason" id="reason"><span class="n">กดปุ่มด้านล่าง</span><span class="t">มีทั้งหมด <span id="r-total"></span> ข้อ</span></div>
+        <button class="btn" id="r-next" type="button">เปิดดูเหตุผล</button>
+      </div>
+
+      <div class="strip"></div>
+      <div class="panel">
+        <span class="eyebrow">ITEMS</span>
+        <h2>คูปองใช้ได้จริง</h2>
+        <p class="muted">แคปหน้าจอไว้ แล้วกดใช้เมื่อไหร่ก็ได้</p>
+        <div class="coupons" id="coupons"></div>
+      </div>
+
+      <div class="strip"></div>
+      <div class="panel" style="text-align:center; align-items:center">
+        <span class="eyebrow">PLAYTIME</span>
+        <p>ตั้งแต่เธอเกิดมาจนถึงตอนนี้</p>
+        <div class="days" id="days">0</div>
+        <p>วัน ขอบคุณที่เกิดมานะ</p>
+        <button class="btn ghost" id="replay" type="button">เล่นใหม่อีกรอบ</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ======================================================
+   แก้ข้อความทั้งหมดได้ที่นี่
+   ====================================================== */
+const CONFIG = {
+  hisName: "ที่รัก",
+  fromName: "มิ้นเอง",
+  birthday: "2026-12-08T00:00:00+07:00",
+  born: "2004-12-08T00:00:00+07:00",
+  lockUntilBirthday: true,          // true = กด START ได้ตอนถึงวันเกิดเท่านั้น
+  password: "0812",
+  passwordHint: "ใบ้: วันเกิดเธอ 4 ตัว (วันวันเดือนเดือน)",
+  quiz: [
+    { q: "เราเจอกันครั้งแรกที่ไหน", choices: ["โรงเรียนอรัญประเทศ", "โรงเรียนสำเร็จ", "มหาลัย"], answer: 1,
+      wrong: "อ้าว จำไม่ได้หรอ ลองใหม่ๆ" },
+    { q: "เมนูที่เค้าสั่งบ่อยที่สุดตอนไปกินด้วยกันคือ", choices: ["หมูกระทะ", "ก๋วยเตี๋ยว", "ส้มตำ", "ข้าวมันไก่"], answer: 1,
+      wrong: "ผิดดด ต้องพาไปกินใหม่ให้จำแล้ว" },
+    { q: "เวลาเค้างอน สิ่งที่ได้ผลที่สุดคือ", choices: ["ปล่อยไว้ เดี๋ยวหายเอง", "ซื้อขนมมาง้อ", "กอดแน่นๆ"], answer: 2,
+      wrong: "ข้อนี้ต้องรู้นะ ลองอีกที" }
+  ],
+  reasons: [
+    "ทุกอย่างที่เป็นเธอ"
+  ],
+  coupons: [
+    { t: "เลี้ยงก๋วยเตี๋ยว 1 มื้อ", d: "ร้านไหนก็ได้ สั่งพิเศษได้เลย" },
+    { t: "ยอมแพ้ทะเลาะ 1 ครั้ง", d: "ใช้ได้แม้เธอจะผิดก็ตาม" },
+    { t: "นวดไหล่ 15 นาที", d: "หลังเล่นเกมดึกๆ" },
+    { t: "ไปเที่ยวที่ไหนก็ได้ 1 วัน", d: "เธอวางแผน เค้าตามไป" }
+  ],
+  letter:
+`สุขสันต์วันเกิดนะที่รัก
+
+ขอบคุณที่เกิดมา และขอบคุณที่เลือกอยู่ข้างกันในทุกๆ วัน ปีนี้เธออายุ 22 แล้ว ขอให้เป็นปีที่ใจดีกับเธอ งานราบรื่น สุขภาพแข็งแรง และมีเรื่องให้ยิ้มเยอะๆ
+
+ถึงจะเป็นแค่เว็บเล็กๆ แต่ตั้งใจทำมากนะ หวังว่าจะชอบ
+
+รักเธอที่สุดเลย`
+};
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const SCREENS = ["title","lock","catch","quiz","memory","cake","reward"];
+const STAGES  = ["catch","quiz","memory","cake","reward"];
+let current = "title";
+
+let soundOn = true, actx = null;
+function beep(freq=660, dur=0.08, type="square", vol=0.05){
+  if(!soundOn) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq; g.gain.value = vol;
+    o.connect(g); g.connect(actx.destination);
+    o.start(); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+    o.stop(actx.currentTime + dur + 0.02);
+  }catch(e){}
+}
+function jingle(notes){ notes.forEach((f,i)=>setTimeout(()=>beep(f,0.12),i*110)); }
+$("sound").onclick = () => { soundOn = !soundOn; $("sound").textContent = soundOn ? "SOUND ON" : "SOUND OFF"; };
+
+function renderPips(){
+  const idx = STAGES.indexOf(current);
+  $("pips").innerHTML = STAGES.map((s,i)=>`<span class="pip ${i<idx?'done':''} ${i===idx?'now':''}"></span>`).join("");
+}
+function go(name){
+  current = name;
+  SCREENS.forEach(s => $("s-"+s).hidden = (s!==name));
+  renderPips();
+  window.scrollTo({top:0, behavior:"smooth"});
+  if(name==="quiz") startQuiz();
+  if(name==="memory") startMemory();
+  if(name==="cake") startCake();
+}
+
+/* ---------- pixel sprites ---------- */
+const PAL = {R:"#ff5f8f",Y:"#ffcf5a",G:"#5be38a",W:"#fff6dc",B:"#6c8cff",P:"#b07cff",K:"#2b2350",O:"#ff9a4d",S:"#ffd9b3",D:"#4a2f25",N:"#1d1840"};
+const SPR = {
+  heart:["........",".RR..RR.","RRRRRRRR","RRRRRRRR",".RRRRRR.","..RRRR..","...RR...","........"],
+  cake: ["...Y....","...W....",".PPPPPP.",".WWWWWW.","RRRRRRRR","WWWWWWWW","RRRRRRRR","........"],
+  book: [".BBBBBB.","BWWWWWB.","BWKKKWB.","BWWWWWB.","BWKKKWB.","BWWWWWB.",".BBBBBB.","........"],
+  star: ["...YY...","...YY...","YYYYYYYY",".YYYYYY.","..YYYY..",".YY..YY.","YY....YY","........"],
+  gift: ["..G..G..","...GG...","PPPGGPPP","PPPGGPPP","GGGGGGGG","PPPGGPPP","PPPGGPPP","PPPGGPPP"],
+  pad:  ["........",".KKKKKK.","KWKKKKBK","WWWKKBKR","KWKKKKRK","KKKKKKKK","KK....KK","........"],
+  arrow:["....GGGG","......GG",".....G.G","....G..G","...G....","O.G.....",".O......","O.O....."],
+  moon: ["..YYY...",".YY.....","YY......","YY......","YY......",".YY.....","..YYY...","........"],
+  boy:  ["..DDDD..",".DDDDDD.",".DSSSSD.",".SKSSKS.",".SRSSRS.","..SSSS..","..BBBB..",".BBBBBB.","S.BBBB.S","..BBBB..","..N..N..","..K..K.."],
+  girl: ["..DDDD..",".DDDDDD.","DDSSSSDD","DSKSSKSD","DSRSSRSD","D.SSSS.D","..RRRR..",".RRRRRR.","S.RRRR.S",".RRRRRR.","..S..S..","..K..K.."],
+  basket:["YY........YY","YYYYYYYYYYYY","YOOYOOYOOYOY",".YYYYYYYYYY.","..YYYYYYYY.."]
+};
+function sprite(rows, scale=1){
+  const c = document.createElement("canvas");
+  c.width = rows[0].length*scale; c.height = rows.length*scale;
+  const x = c.getContext("2d");
+  rows.forEach((r,y)=>[...r].forEach((ch,i)=>{ if(PAL[ch]){ x.fillStyle=PAL[ch]; x.fillRect(i*scale,y*scale,scale,scale);} }));
+  return c;
+}
+const S1 = {}; Object.keys(SPR).forEach(k => S1[k] = sprite(SPR[k], 2));
+
+/* ---------- decorations ---------- */
+const URL8 = {}; Object.keys(SPR).forEach(k => URL8[k] = sprite(SPR[k], 8).toDataURL());
+document.querySelectorAll("img[data-s]").forEach(im => im.src = URL8[im.dataset.s]);
+$("lives").innerHTML = [0,1,2].map(()=>`<img src="${URL8.heart}" alt="">`).join("");
+(function(){
+  const t = document.createElement("canvas"); t.width = 12; t.height = 12;
+  const x = t.getContext("2d"); x.globalAlpha = .28; x.drawImage(sprite(SPR.heart,1), 2, 2);
+  const root = document.documentElement.style;
+  root.setProperty("--tile", `url(${t.toDataURL()})`);
+  root.setProperty("--strip", `url(${URL8.heart})`);
+  const kinds = ["heart","star","gift","cake","moon","arrow","heart","star","gift"];
+  document.querySelectorAll(".panel, .gamebox").forEach((p,i) => {
+    const d = document.createElement("img");
+    d.className = "deco " + (i%2 ? "l" : "r"); d.alt = ""; d.src = URL8[kinds[i%kinds.length]];
+    d.style.animationDelay = (i*0.3)+"s";
+    p.appendChild(d);
+    if(i%3===0){ const e = document.createElement("img"); e.className="deco b"; e.alt=""; e.src = URL8[i%2?"star":"heart"]; p.appendChild(e); }
+  });
+})();
+
+/* ---------- ambient floating hearts & stars ---------- */
+(function(){
+  const c = $("ambient"), x = c.getContext("2d");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const imgs = [S1.heart, S1.star, S1.heart, S1.moon];
+  let fl = [], tw = [];
+  function size(){
+    c.width = Math.ceil(innerWidth/2); c.height = Math.ceil(innerHeight/2);
+    x.imageSmoothingEnabled = false;
+    fl = Array.from({length:14},()=>({x:Math.random()*c.width, y:Math.random()*c.height, v:6+Math.random()*10, ph:Math.random()*6, im:imgs[Math.random()*imgs.length|0], a:.18+Math.random()*.25}));
+    tw = Array.from({length:50},()=>({x:Math.random()*c.width|0, y:Math.random()*c.height|0, ph:Math.random()*6, g:Math.random()<.3}));
+  }
+  let lt = performance.now();
+  function frame(now){
+    const dt = Math.min(.05,(now-lt)/1000); lt = now;
+    x.clearRect(0,0,c.width,c.height);
+    tw.forEach(s=>{ s.ph += dt*2; const a = .3+.7*Math.abs(Math.sin(s.ph)); x.globalAlpha=a; x.fillStyle = s.g?"#ffcf5a":"#ffffff"; x.fillRect(s.x,s.y,1,1); });
+    fl.forEach(f=>{
+      f.y -= f.v*dt; f.ph += dt;
+      if(f.y < -20){ f.y = c.height+10; f.x = Math.random()*c.width; }
+      x.globalAlpha = f.a; x.drawImage(f.im, Math.round(f.x+Math.sin(f.ph)*6), Math.round(f.y), 8, 8);
+    });
+    x.globalAlpha = 1;
+    if(!still) requestAnimationFrame(frame);
+  }
+  size(); addEventListener("resize", size);
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- title / countdown ---------- */
+$("t-sub").textContent = `ด่านพิเศษที่ทำไว้ให้${CONFIG.hisName}คนเดียว เล่นให้ผ่านทุกด่าน แล้วของขวัญจะเปิดเอง`;
+const BDAY = new Date(CONFIG.birthday).getTime();
+function tick(){
+  let diff = BDAY - Date.now();
+  if(diff <= 0){
+    $("cd-label").textContent = "วันนี้คือวันเกิดของเธอ!";
+    ["d","h","m","s"].forEach(k=>$("cd-"+k).textContent="00");
+    $("start").disabled = false; $("lock-note").hidden = true;
+    return;
+  }
+  const s = Math.floor(diff/1000);
+  $("cd-d").textContent = Math.floor(s/86400);
+  $("cd-h").textContent = String(Math.floor(s%86400/3600)).padStart(2,"0");
+  $("cd-m").textContent = String(Math.floor(s%3600/60)).padStart(2,"0");
+  $("cd-s").textContent = String(s%60).padStart(2,"0");
+  if(CONFIG.lockUntilBirthday){ $("start").disabled = true; $("lock-note").hidden = false; }
+}
+tick(); setInterval(tick, 1000);
+$("start").onclick = () => { jingle([523,659,784,1046]); go("lock"); setTimeout(()=>$("pw").focus(),300); };
+
+/* ---------- lock ---------- */
+$("pw-hint").textContent = CONFIG.passwordHint;
+function checkPw(){
+  if($("pw").value.trim() === CONFIG.password){
+    jingle([784,988,1318]); go("catch");
+  }else{
+    beep(160,0.25,"sawtooth");
+    $("pw-err").textContent = "รหัสไม่ถูก ลองอีกทีนะ";
+    const p = $("lock-panel"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
+  }
+}
+$("pw-go").onclick = checkPw;
+$("pw").addEventListener("keydown", e => { if(e.key==="Enter") checkPw(); });
+
+/* ---------- stage 1: catch ---------- */
+$("legend").innerHTML = [["heart","หัวใจ +1"],["cake","เค้ก +2"],["book","การบ้าน −2"]]
+  .map(([k,t])=>`<span><img src="${sprite(SPR[k],2).toDataURL()}" alt="">${t}</span>`).join("");
+const cv = $("catch-cv"), cx = cv.getContext("2d"); cx.imageSmoothingEnabled = false;
+const W = 240, H = 300, PY = 270, GOAL = 22;
+const stars = Array.from({length:40},()=>[Math.random()*W|0, Math.random()*250|0, Math.random()<.2]);
+let G = null, keys = {left:false,right:false}, target = null, last = 0;
+
+function drawCatch(){
+  cx.fillStyle = "#100d27"; cx.fillRect(0,0,W,H);
+  stars.forEach(([x,y,b])=>{ cx.fillStyle = b ? "#ffcf5a" : "#6b64a8"; cx.fillRect(x,y,1,1); });
+  cx.drawImage(S1.moon, 206, 14); cx.globalAlpha=.5; cx.drawImage(S1.star, 24, 40); cx.drawImage(S1.star, 150, 90); cx.globalAlpha=1;
+  cx.fillStyle = "#262158"; cx.fillRect(0,284,W,16);
+  cx.fillStyle = "#5be38a"; cx.fillRect(0,284,W,2);
+  if(!G) return;
+  G.items.forEach(it => cx.drawImage(S1[it.type], Math.round(it.x-8), Math.round(it.y)));
+  cx.drawImage(S1.basket, Math.round(G.x-12), PY);
+  cx.font = "8px 'Press Start 2P', monospace"; cx.textAlign = "center";
+  G.pops.forEach(p => { cx.fillStyle = p.c; cx.globalAlpha = Math.max(0,p.life); cx.fillText(p.t, p.x, p.y); });
+  cx.globalAlpha = 1;
+}
+function loop(now){
+  if(!G || !G.running) return;
+  const dt = Math.min(0.05, (now-last)/1000); last = now;
+  // move
+  if(target!==null) G.x += Math.max(-220*dt, Math.min(220*dt, target-G.x));
+  if(keys.left) G.x -= 180*dt;
+  if(keys.right) G.x += 180*dt;
+  G.x = Math.max(12, Math.min(W-12, G.x));
+  // spawn
+  G.spawn -= dt;
+  if(G.spawn <= 0){
+    const r = Math.random();
+    const type = r < .68 ? "heart" : r < .82 ? "cake" : "book";
+    G.items.push({type, x: 10+Math.random()*(W-20), y:-16, vy: 70+Math.random()*50+G.score*2.2});
+    G.spawn = Math.max(0.38, 0.85 - G.score*0.02);
+  }
+  // items
+  for(let i=G.items.length-1;i>=0;i--){
+    const it = G.items[i]; it.y += it.vy*dt;
+    if(it.y+14 >= PY && it.y <= PY+8 && Math.abs(it.x-G.x) < 18){
+      const v = it.type==="heart"?1:it.type==="cake"?2:-2;
+      G.score = Math.max(0, G.score+v);
+      G.pops.push({x:it.x, y:PY-6, t:(v>0?"+":"")+v, c: v>0?"#5be38a":"#ff6f9f", life:1});
+      if(v>0) beep(880+G.score*12, .06); else { beep(140,.18,"sawtooth"); $("sc-msg").textContent = "ไปทำการบ้านก่อน!"; setTimeout(()=>$("sc-msg").textContent="",900); }
+      G.items.splice(i,1);
+    } else if(it.y > H) G.items.splice(i,1);
+  }
+  G.pops.forEach(p=>{p.y -= 30*dt; p.life -= dt*1.4;}); G.pops = G.pops.filter(p=>p.life>0);
+  $("sc").textContent = Math.min(G.score, GOAL);
+  drawCatch();
+  if(G.score >= GOAL){
+    G.running = false;
+    jingle([659,784,988,1318]); confetti(80);
+    $("catch-ov").hidden = false;
+    $("catch-ov").innerHTML = `<p class="eyebrow">STAGE CLEAR</p><p>เก็บครบ 22 ดวง เท่าอายุเธอเลย</p><button class="btn gold" type="button" id="to-quiz">ด่านต่อไป ▶</button>`;
+    $("to-quiz").onclick = () => go("quiz");
+    return;
+  }
+  requestAnimationFrame(loop);
+}
+function startCatchGame(){
+  G = {x:W/2, items:[], pops:[], score:0, spawn:0.4, running:true};
+  $("catch-ov").hidden = true; last = performance.now(); requestAnimationFrame(loop);
+}
+$("catch-go").onclick = startCatchGame;
+function toCanvasX(e){ const r = cv.getBoundingClientRect(); return (e.clientX-r.left)/r.width*W; }
+cv.addEventListener("pointerdown", e => { target = toCanvasX(e); cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", e => { if(target!==null || e.pointerType==="mouse") target = toCanvasX(e); });
+["pointerup","pointercancel"].forEach(ev => cv.addEventListener(ev, e => { if(e.pointerType!=="mouse") target = null; }));
+cv.addEventListener("pointerleave", () => target = null);
+[["left","left"],["right","right"]].forEach(([id,k])=>{
+  const b = $(id);
+  b.addEventListener("pointerdown", e => { e.preventDefault(); keys[k]=true; target=null; });
+  ["pointerup","pointerleave","pointercancel"].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false));
+});
+window.addEventListener("keydown", e => { if(current!=="catch") return;
+  if(e.key==="ArrowLeft"){keys.left=true; target=null;} if(e.key==="ArrowRight"){keys.right=true; target=null;} });
+window.addEventListener("keyup", e => { if(e.key==="ArrowLeft") keys.left=false; if(e.key==="ArrowRight") keys.right=false; });
+drawCatch();
+
+/* ---------- stage 2: quiz ---------- */
+let qi = 0;
+function startQuiz(){ qi = 0; showQ(); }
+function showQ(){
+  const Q = CONFIG.quiz[qi];
+  $("q-n").textContent = `STAGE 2 · ${qi+1}/${CONFIG.quiz.length}`;
+  $("q-text").textContent = Q.q;
+  $("q-msg").textContent = "";
+  $("q-choices").innerHTML = "";
+  Q.choices.forEach((c,i)=>{
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "choice"; b.textContent = c;
+    b.onclick = () => {
+      if(i === Q.answer){
+        b.classList.add("right"); jingle([784,1046]);
+        [...$("q-choices").children].forEach(x=>x.disabled=true);
+        setTimeout(()=>{ qi++; qi < CONFIG.quiz.length ? showQ() : go("memory"); }, 700);
+      }else{
+        b.classList.add("wrong","shake"); beep(160,.2,"sawtooth");
+        $("q-msg").textContent = Q.wrong;
+        setTimeout(()=>b.classList.remove("shake"),400);
+      }
+    };
+    $("q-choices").appendChild(b);
+  });
+}
+
+/* ---------- stage 3: memory ---------- */
+const FACES = ["heart","cake","star","gift","pad","arrow"];
+const FACE_URL = {}; FACES.forEach(f => FACE_URL[f] = sprite(SPR[f], 8).toDataURL());
+let open = [], moves = 0, got = 0, busy = false;
+function startMemory(){
+  open = []; moves = 0; got = 0; busy = false; $("mv").textContent = 0;
+  const deck = [...FACES, ...FACES].sort(()=>Math.random()-.5);
+  $("grid").innerHTML = "";
+  deck.forEach(f=>{
+    const c = document.createElement("button");
+    c.type = "button"; c.className = "card"; c.dataset.f = f; c.setAttribute("aria-label","การ์ดคว่ำ");
+    c.innerHTML = `<span class="qm">?</span><img src="${FACE_URL[f]}" alt="">`;
+    c.onclick = () => flip(c);
+    $("grid").appendChild(c);
+  });
+}
+function flip(c){
+  if(busy || c.classList.contains("open") || c.classList.contains("got")) return;
+  c.classList.add("open"); beep(600,.05); open.push(c);
+  if(open.length === 2){
+    moves++; $("mv").textContent = moves;
+    const [a,b] = open;
+    if(a.dataset.f === b.dataset.f){
+      a.classList.replace("open","got"); b.classList.replace("open","got");
+      open = []; got++; jingle([880,1175]);
+      if(got === FACES.length) setTimeout(()=>{ confetti(60); go("cake"); }, 700);
+    }else{
+      busy = true;
+      setTimeout(()=>{ a.classList.remove("open"); b.classList.remove("open"); open = []; busy = false; }, 750);
+    }
+  }
+}
+
+/* ---------- stage 4: cake ---------- */
+function startCake(){
+  $("candles").innerHTML = ""; $("hb").hidden = true; $("to-gift").hidden = true;
+  $("cake-h").textContent = "อธิษฐานก่อน แล้วแตะเทียนให้ดับทุกเล่ม";
+  let left = 5;
+  for(let i=0;i<5;i++){
+    const c = document.createElement("button");
+    c.type = "button"; c.className = "candle"; c.setAttribute("aria-label","เป่าเทียน");
+    c.innerHTML = `<span class="flame"></span>`;
+    c.onclick = () => {
+      if(c.classList.contains("out")) return;
+      c.classList.add("out"); beep(300-left*20,.12,"triangle"); left--;
+      if(left===0){
+        $("cake-h").textContent = "ขอให้คำอธิษฐานเป็นจริงทุกข้อ";
+        $("hb").hidden = false; $("to-gift").hidden = false;
+        jingle([523,523,587,523,698,659]); confetti(160);
+      }
+    };
+    $("candles").appendChild(c);
+  }
+}
+$("to-gift").onclick = () => go("reward");
+
+/* ---------- reward ---------- */
+let typing = null;
+$("gift").onclick = () => {
+  jingle([659,880,1175,1568]); confetti(180);
+  $("gift-wrap").hidden = true; $("opened").hidden = false;
+  typeLetter(); countDays();
+};
+function letterHTML(n){
+  const txt = CONFIG.letter.slice(0,n).replace(/[&<>]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+  const done = n >= CONFIG.letter.length;
+  return txt + (done ? `<span class="sign">จาก ${CONFIG.fromName}</span>` : `<span class="caret"></span>`);
+}
+function typeLetter(){
+  let n = 0; clearInterval(typing);
+  typing = setInterval(()=>{
+    n++; $("letter").innerHTML = letterHTML(n);
+    if(n % 3 === 0) beep(1200,.015,"square",.02);
+    if(n >= CONFIG.letter.length){ clearInterval(typing); $("skip").hidden = true; }
+  }, 45);
+}
+$("skip").onclick = () => { clearInterval(typing); $("letter").innerHTML = letterHTML(CONFIG.letter.length); $("skip").hidden = true; };
+
+const order = CONFIG.reasons.map((_,i)=>i).sort(()=>Math.random()-.5);
+let ri = 0;
+$("r-total").textContent = CONFIG.reasons.length;
+$("r-next").onclick = () => {
+  const i = order[ri % order.length];
+  $("reason").innerHTML = `<span class="n">REASON ${String(ri % order.length + 1).padStart(2,"0")}/${CONFIG.reasons.length}</span><span class="t">${CONFIG.reasons[i]}</span>`;
+  $("reason").classList.remove("pop"); void $("reason").offsetWidth; $("reason").classList.add("pop");
+  beep(990,.06); ri++;
+  if(ri >= order.length) $("r-next").textContent = "อ่านวนอีกรอบ";
+};
+
+let usedC = {};
+try{ usedC = JSON.parse(localStorage.getItem("lv22-coupons")||"{}"); }catch(e){}
+function renderCoupons(){
+  $("coupons").innerHTML = "";
+  CONFIG.coupons.forEach((c,i)=>{
+    const d = document.createElement("div");
+    d.className = "coupon" + (usedC[i] ? " used" : "");
+    d.innerHTML = `<h3>${c.t}</h3><p>${c.d}</p><button type="button">${usedC[i] ? "ยกเลิก" : "ใช้คูปอง"}</button>`;
+    d.querySelector("button").onclick = () => {
+      usedC[i] = !usedC[i]; beep(usedC[i]?700:400,.08);
+      try{ localStorage.setItem("lv22-coupons", JSON.stringify(usedC)); }catch(e){}
+      renderCoupons();
+    };
+    $("coupons").appendChild(d);
+  });
+}
+renderCoupons();
+
+function countDays(){
+  const total = Math.floor((Date.now() - new Date(CONFIG.born).getTime())/86400000);
+  const t0 = performance.now();
+  (function step(now){
+    const p = Math.min(1,(now-t0)/1800), v = Math.floor(total*(1-Math.pow(1-p,3)));
+    $("days").textContent = v.toLocaleString("th-TH");
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+$("replay").onclick = () => {
+  $("gift-wrap").hidden = false; $("opened").hidden = true; $("skip").hidden = false;
+  ri = 0; $("r-next").textContent = "เปิดดูเหตุผล";
+  G = null; $("sc").textContent = 0; drawCatch();
+  $("catch-ov").hidden = false;
+  $("catch-ov").innerHTML = `<p>ลากนิ้วบนจอ หรือกดปุ่มซ้ายขวา<br>เพื่อขยับตะกร้า</p><button class="btn" id="catch-go2" type="button">เริ่มเลย</button>`;
+  $("catch-go2").onclick = startCatchGame;
+  $("pw").value = ""; $("pw-err").textContent = "";
+  go("title");
+};
+
+/* ---------- confetti ---------- */
+const cf = $("confetti"), cfx = cf.getContext("2d");
+let bits = [], cfRun = false;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function confetti(n){
+  if(reduce) n = Math.min(n,20);
+  cf.width = innerWidth; cf.height = innerHeight;
+  const cols = ["#ff5f8f","#ffcf5a","#5be38a","#6c8cff","#b07cff","#fff6dc"];
+  for(let i=0;i<n;i++) bits.push({x:innerWidth/2+(Math.random()-.5)*120, y:innerHeight*0.35,
+    vx:(Math.random()-.5)*9, vy:-Math.random()*10-3, s:4+(Math.random()*4|0), c:cols[i%cols.length], life:1});
+  if(!cfRun){ cfRun = true; requestAnimationFrame(cfStep); }
+}
+function cfStep(){
+  cfx.clearRect(0,0,cf.width,cf.height);
+  bits.forEach(b=>{ b.vy += .32; b.x += b.vx; b.y += b.vy; b.life -= .008; cfx.fillStyle=b.c; cfx.fillRect(b.x|0,b.y|0,b.s,b.s); });
+  bits = bits.filter(b=>b.life>0 && b.y<cf.height+20);
+  if(bits.length) requestAnimationFrame(cfStep); else { cfRun = false; cfx.clearRect(0,0,cf.width,cf.height); }
+}
+
+renderPips();
+</script>
+
+</body>
+</html>
